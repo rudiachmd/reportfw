@@ -39,7 +39,7 @@
                         </td>
                         <td>16051204008</td>
                         <td>Muhammad Nur Qoyyimi</td>
-                        <td>BackEnd</td>
+                        <td>BackEnd Data Tiket, Karyawan, User </td>
                     </tr>
                     <tr>
                         <td>
@@ -55,7 +55,7 @@
                         </td>
                         <td>16051204030</td>
                         <td>Achmad Chairuddin</td>
-                        <td>BackEnd Laporan, </td>
+                        <td>BackEnd Login, Tiket dan Respon Tiket </td>
                     </tr>
                 </tbody>
                 <tfoot>
