@@ -3,10 +3,10 @@
 
     <header class="main-header">
       <!-- Logo -->
-      <a class="logo">
+      <a href="<?= base_url() ?>Karyawan/" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>Kominfo</b>Jatim</span>
+        <span class="logo-lg"><b>Tif</b>UNESA</span>
       </a>
       <!-- Header Navbar: style can be found in header.less -->
       <nav class="navbar navbar-static-top">
@@ -21,78 +21,6 @@
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
             <!-- Messages: style can be found in dropdown.less-->
-            <li class="dropdown messages-menu">
-              <ul class="dropdown-menu">
-                <li>
-                  <!-- inner menu: contains the actual data -->
-                  <ul class="menu">
-                    <li>
-                      <!-- start message -->
-                      <a href="#">
-                        <div class="pull-left">
-                          <img src="<?= base_url() ?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-                        </div>
-                        <h4>
-                          Support Team
-                          <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                        </h4>
-                        <p>Why not buy a new awesome theme?</p>
-                      </a>
-                    </li>
-                    <!-- end message -->
-                    <li>
-                      <a href="#">
-                        <div class="pull-left">
-                          <img src="<?= base_url() ?>assets/dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
-                        </div>
-                        <h4>
-                          AdminLTE Design Team
-                          <small><i class="fa fa-clock-o"></i> 2 hours</small>
-                        </h4>
-                        <p>Why not buy a new awesome theme?</p>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <div class="pull-left">
-                          <img src="<?= base_url() ?>assets/dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
-                        </div>
-                        <h4>
-                          Developers
-                          <small><i class="fa fa-clock-o"></i> Today</small>
-                        </h4>
-                        <p>Why not buy a new awesome theme?</p>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <div class="pull-left">
-                          <img src="<?= base_url() ?>assets/dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
-                        </div>
-                        <h4>
-                          Sales Department
-                          <small><i class="fa fa-clock-o"></i> Yesterday</small>
-                        </h4>
-                        <p>Why not buy a new awesome theme?</p>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <div class="pull-left">
-                          <img src="<?= base_url() ?>assets/dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
-                        </div>
-                        <h4>
-                          Reviewers
-                          <small><i class="fa fa-clock-o"></i> 2 days</small>
-                        </h4>
-                        <p>Why not buy a new awesome theme?</p>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="footer"><a href="#">See All Messages</a></li>
-              </ul>
-            </li>
             <!-- Notifications: style can be found in dropdown.less -->
             <li class="dropdown notifications-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -140,41 +68,25 @@
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="<?= base_url() ?>assets/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                <span class="hidden-xs">Alexander Pierce</span>
+                <span class="hidden-xs"><?php foreach ($user->result() as $userdata) echo $userdata->first_name; ?></span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                  <img src="<?= base_url() ?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+
 
                   <p>
-                    Alexander Pierce - Web Developer
-                    <small>Member since Nov. 2012</small>
+                    <?php foreach ($user->result() as $userdata) echo $userdata->first_name; ?>
                   </p>
                 </li>
                 <!-- Menu Body -->
-                <li class="user-body">
-                  <div class="row">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </div>
-                  <!-- /.row -->
-                </li>
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                    <a href="<?= base_url() ?>Auth/edit_user/<?php foreach ($user->result() as $userdata) echo $userdata->id; ?>" class="btn btn-default btn-flat">Profile</a>
                   </div>
                   <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    <a href="<?= base_url() ?>auth/logout" class="btn btn-default btn-flat">Sign out</a>
                   </div>
                 </li>
               </ul>
@@ -189,12 +101,9 @@
       <section class="sidebar">
         <!-- Sidebar user panel -->
         <div class="user-panel">
-          <div class="pull-left image">
-            <img src="<?= base_url() ?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-          </div>
-          <div class="pull-left info">
-            <p>Alexander Pierce</p>
-          </div>
+
+          <a>Halo, <?php foreach ($user->result() as $userdata) echo $userdata->first_name; ?></a>
+
         </div>
         <!-- search form -->
 
@@ -209,7 +118,7 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li class="active"><a href=""><i class="fa fa-circle-o"></i>Data Klien Baru</a></li>
+              <li class="active"><a href=""><i class="fa fa-user"></i>Data Klien Baru</a></li>
             </ul>
           </li>
       </section>
@@ -218,189 +127,176 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-      <!-- Content Header (Page header) -->
-      <section class="content-header">
-        <h1>
-          Tabel Data
-        </h1>
-      </section>
+      <?php
+      if (isset($klien_data)) { ?>
 
-      <!-- Main content -->
-      <section class="content">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="box">
-              <div class="box-header">
-                <h3 class="box-title" style="text-align: center">Data Klien Baru</h3>
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-md-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav navbar-static-top">
+                  <h4 style="text-align: center"><strong>Review Klien Baru</strong></h4>
+                </ul>
+                <form class="form-horizontal" action="<?= base_url() ?>Karyawan/verif" method="post">
+                  <?php foreach ($klien_data->result() as $row) { ?>
+                    <div class="form-group">
+                      <label for="namadepan" class="col-sm-2 control-label">Nama Depan</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="namadepan" placeholder="Nama Depan" value="<?php echo $row->first_name; ?>" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="namabelakang" class="col-sm-2 control-label">Nama Belakang</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="namabelakang" placeholder="Nama Belakang" value="<?php echo $row->last_name; ?>" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="email" class="col-sm-2 control-label">Email</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="email" placeholder="email" value="<?php echo $row->email; ?>" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="alamat" class="col-sm-2 control-label">Alamat</label>
+                      <div class="col-sm-10">
+                        <textarea class="form-control" id="alamat" placeholder="Alamat" disabled><?php echo $row->address; ?></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="nomorktp" class="col-sm-2 control-label">Nomor KTP</label>
+                      <div class="col-sm-10">
+                        <input type="number" class="form-control" id="nomortelepon" placeholder="Nomor KTP" value="<?php echo $row->ktp; ?>" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="fotoktp" class="col-sm-2 control-label">Foto KTP</label>
+                      <div class="col-sm-10">
+                        <img src="<?= base_url() ?>/upload/ktp/<?= $row->pict_ktp ?>">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="col-sm-offset-2 col-sm-10">
+                        <input type="hidden" name="hidden_id" value="<?= $row->id ?>">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" name="delete" value="delete" class="btn btn-danger delete_data" id="<?= $row->id ?>">Tolak</button>
+                        <button type="submit" name="update" value="Insert" class="btn btn-success">Terima</button>
+                      </div>
+                    </div>
+                  <?php } ?>
+                </form>
               </div>
-
-              <div class="modal modal-info fade" id="detailakun">
-                <div class="modal-dialog">
-                  <div class="modal-content" style="width:450px">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" style="text-align: center">Detail Akun</h4>
-                    </div>
-                    <div class="modal-body">
-                      <div class="form-group has-feedback">
-                        <input type="text" style="width:400px" class="form-control" placeholder="Nama">
-
-                      </div>
-                      <div class="form-group has-feedback">
-                        <input type="email" style="width:400px" class="form-control" placeholder="Email">
-
-                      </div>
-                      <div class="form-group has-feedback">
-                        <input type="text" style="width:400px" class="form-control" placeholder="Tanggal Lahir">
-
-                      </div>
-                      <div class="form-group has-feedback">
-                        <input type="text" style="width:400px" class="form-control" placeholder="Alamat">
-                      </div>
-                      <div class="form-group has-feedback">
-                        <input type="text" style="width:400px" class="form-control" placeholder="No.KTP">
-                      </div>
-                      <div class="form-group has-feedback">
-                        <input type="text" style="width:400px" class="form-control" placeholder="Foto KTP">
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Reject</button>
-                      <button type="button" class="btn btn-outline">Accept</button>
-                    </div>
-                  </div>
-                  <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-              </div>
-
-              <div class="modal modal-danger fade" id="deleteklien">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title">Peringatan!</h4>
-                    </div>
-                    <div class="modal-body">
-                      <p>Apakah Anda Yakin Ingin Menghapus Data?</p>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-outline">Hapus</button>
-                    </div>
-                  </div>
-                  <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-              </div>
-
-              <!-- /.box-header -->
-              <div class="box-body">
-                <table id="example1" class="table table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>ID Klien</th>
-                      <th>Nama Lengkap</th>
-                      <th>Tanggal Lahir</th>
-                      <th>Alamat</th>
-                      <th>No.KTP</th>
-                      <th>Foto KTP</th>
-                      <th>Status</th>
-                      <th>Action</th>
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>001</td>
-                      <td>Anjing</td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>OK</td>
-                      <td>198329132893</td>
-                      <td>jos</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#detailakun"><i class="glyphicon glyphicon-eye-open" style="color:blue"></i></button>
-                      </td>
-
-
-                    </tr>
-                    <tr>
-                      <td>001</td>
-                      <td>Abdul</td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>Cancel</td>
-                      <td>198329132893</td>
-                      <td>mantap</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#detailakun"><i class="glyphicon glyphicon-eye-open" style="color:blue"></i></button>
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>001</td>
-                      <td>Abdul</td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>Web</td>
-                      <td>198329132893</td>
-                      <td>mantap</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#detailakun"><i class="glyphicon glyphicon-eye-open" style="color:blue"></i></button>
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>001</td>
-                      <td>Abdul</td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>Web</td>
-                      <td>198329132893</td>
-                      <td>mantap</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#detailakun"><i class="glyphicon glyphicon-eye-open" style="color:blue"></i></button>
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>001</td>
-                      <td>Abdul</td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>Web</td>
-                      <td>198329132893</td>
-                      <td>mantap</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#detailakun"><i class="glyphicon glyphicon-eye-open" style="color:blue"></i></button>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                  </tfoot>
-                </table>
-              </div>
-              <!-- /.box-body -->
+              <!-- /.tab-pane -->
+              </!-->
+              <!-- /.tab-content -->
             </div>
+            <!-- /.nav-tabs-custom -->
+          </div>
+          <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    </section>
+
+  <?php
+      } else {
+  ?>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Tabel Data
+      </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title" style="text-align: center">Data Klien Baru</h3>
+            </div>
+
+            <div class="modal modal-danger fade" id="deleteklien">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Peringatan!</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Apakah Anda Yakin Ingin Menghapus Data?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline">Hapus</button>
+                  </div>
+                </div>
+                <!-- /.modal-content -->
+              </div>
+              <!-- /.modal-dialog -->
+            </div>
+
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>Daftar Sebagai</th>
+                    <th>Nama Lengkap</th>
+                    <th>No.KTP</th>
+                    <th>Alamat</th>
+                    <th>Action</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  foreach ($daftar_user_baru->result() as $row) {
+                  ?>
+                    <tr>
+                      <td><?= $row->company ?></td>
+                      <td><?= $row->first_name ?> <?= $row->last_name ?></td>
+                      <td><?= $row->ktp ?></td>
+                      <td><?= $row->address ?></td>
+                      <td>
+                        <a href="<?= base_url() ?>Karyawan/preview/<?= $row->id ?>"><button class="btn btn-app1"><i class="glyphicon glyphicon-eye-open" style="color:blue"></i></button></a>
+                      </td>
+                    </tr>
+                  <?php
+                  }
+                  ?>
+                </tbody>
+                <tfoot>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
           </div>
         </div>
-      </section>
-    </div>
-    <!-- /.box -->
-    <!-- /.content-wrapper -->
-    <footer class="main-footer">
-      <div class="pull-right hidden-xs">
       </div>
-      <strong>Website by S1 Teknik Informatika 2016</strong> Universitas Negeri Surabaya
-    </footer>
+    </section>
+  <?php } ?>
+  </div>
+  <!-- /.box -->
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+    </div>
+    <strong>Website by S1 Teknik Informatika 2016 Universitas Negeri Surabaya </strong>
+  </footer>
 
-    <!-- Control Sidebar -->
-    <!-- /.control-sidebar -->
-    <!-- Add the sidebar's background. This div must be placed
+  <!-- Control Sidebar -->
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
-    <div class="control-sidebar-bg"></div>
+  <div class="control-sidebar-bg"></div>
   </div>
   <!-- ./wrapper -->

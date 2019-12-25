@@ -49,6 +49,19 @@
           })
       })
   </script>
+  <script>
+      $(document).ready(function() {
+          $('.delete_data').click(function() {
+              var id = $(this).attr("id");
+              if (confirm("hapus?")) {
+                  window.location = "<?= base_url() ?>Karyawan/verif/" + id;
+              } else {
+                  return false;
+              }
+          });
+      });
+  </script>
+
   </body>
 
   </html>

@@ -3,10 +3,10 @@
 
     <header class="main-header">
       <!-- Logo -->
-      <a class="logo">
+      <a href="<?= base_url() ?>Karyawan_asking/" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>Kominfo</b>Jatim</span>
+        <span class="logo-lg"><b>TIf</b>UNESA</span>
       </a>
       <!-- Header Navbar: style can be found in header.less -->
       <nav class="navbar navbar-static-top">
@@ -68,41 +68,24 @@
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="<?= base_url() ?>assets/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                <span class="hidden-xs">Alexander Pierce</span>
+                <span class="hidden-xs"><?php foreach ($user->result() as $userdata) echo $userdata->first_name; ?></span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                  <img src="<?= base_url() ?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                   <p>
-                    Alexander Pierce - Web Developer
-                    <small>Member since Nov. 2012</small>
+                    <?php foreach ($user->result() as $userdata) echo $userdata->first_name; ?>
                   </p>
                 </li>
                 <!-- Menu Body -->
-                <li class="user-body">
-                  <div class="row">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </div>
-                  <!-- /.row -->
-                </li>
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                    <a href="<?= base_url() ?>Auth/edit_user/<?php foreach ($user->result() as $userdata) echo $userdata->id; ?>" class="btn btn-default btn-flat">Profile</a>
                   </div>
                   <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    <a href="<?= base_url() ?>auth/logout" class="btn btn-default btn-flat">Sign out</a>
                   </div>
                 </li>
               </ul>
@@ -118,28 +101,29 @@
       <section class="sidebar">
         <!-- Sidebar user panel -->
         <div class="user-panel">
-          <div class="pull-left image">
-            <img src="<?= base_url() ?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-          </div>
-          <div class="pull-left info">
-            <p>Alexander Pierce</p>
-          </div>
+
+          <a>Halo, <?php foreach ($user->result() as $userdata) echo $userdata->first_name; ?></a>
+
         </div>
         <!-- search form -->
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
-          <li class="treeview active">
+          <li class="treeview">
             <a href="#">
-              <i class="fa fa-table"></i> <span>Menu Karyawan</span>
+              <i class="fa fa-table"></i><span>Menu Karyawan</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
             </a>
             <ul class="treeview-menu">
-              <li class="active"><a href="#"><i class="fa fa-circle-o"></i>Data Tiket</a></li>
+              <li <?php if (isset($daftar_tiket_resp)) echo 'class="active"'; ?>><a href="<?= base_url() ?>Karyawan_asking/"><i class="fa fa-check-circle"></i> Tiket Respon</a></li>
+              <li <?php if (isset($daftar_tiket_xresp)) echo 'class="active"'; ?>><a href="<?= base_url() ?>Karyawan_asking/xresp/"><i class="fa fa-envelope-o"></i> Tiket Belum Respon</a></li>
+              <li <?php if (isset($daftar_tiket_close)) echo 'class="active"'; ?>><a href="<?= base_url() ?>Karyawan_asking/close/"><i class="fa fa-close"></i> Tiket Close</a></li>
             </ul>
           </li>
+        </ul>
+        </li>
       </section>
       <!-- /.sidebar -->
     </aside>
@@ -148,198 +132,327 @@
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
       <!-- Main content -->
-      <section class="content">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="box">
-              <div class="box-header">
-                <h3 class="box-title" style="text-align: center">Data Tiket</h3>
-              </div>
-
-              <div class="modal modal-danger fade" id="deletetiket">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title">Peringatan!</h4>
-                    </div>
-                    <div class="modal-body">
-                      <p>Apakah Anda Yakin Ingin Menghapus Data?</p>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-outline">Hapus</button>
-                    </div>
-                  </div>
-                  <!-- /.modal-content -->
+      <?php if (isset($daftar_tiket_xresp)) { ?>
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title" style="text-align: center">Data Tiket</h3>
                 </div>
-                <!-- /.modal-dialog -->
-              </div>
 
-              <div class="modal modal-danger fade" id="deletetiket">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title">Peringatan!</h4>
-                    </div>
-                    <div class="modal-body">
-                      <p>Apakah Anda Yakin Ingin Menghapus Data?</p>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-outline">Hapus</button>
-                    </div>
-                  </div>
-                  <!-- /.modal-content -->
+
+
+                <!-- /.box-header -->
+                <div class="box-body">
+                  <table id="example1" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>ID Tiket</th>
+                        <th>Nama Pengirim</th>
+                        <th>Judul</th>
+                        <th>Tanggal</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php
+                      foreach ($daftar_tiket_xresp->result() as $row) {
+                      ?>
+                        <tr>
+                          <td><?= $row->id_ticket ?></td>
+                          <td><?= $row->first_name ?></td>
+                          <td><?= $row->details ?></td>
+                          <td><?= $row->date_time ?></td>
+                          <td>
+                            <a href="<?= base_url() ?>Karyawan_asking/detail_tiket/<?= $row->id_ticket ?>"><button class="btn btn-app1" data-toggle="modal" data-target="#detailtiket"><i class="fa fa-edit"></i></button></a>
+                            <button class="btn btn-app1" data-toggle="modal" data-target="#deletetiket<?= $row->id_ticket ?>"><i class="fa fa-remove" style="color:red"></i></button>
+                          </td>
+                        </tr>
+                        <div class="modal modal-danger fade" id="deletetiket<?= $row->id_ticket ?>">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Peringatan!</h4>
+                              </div>
+                              <div class="modal-body">
+                                <p>Apakah Anda Yakin Ingin Menutup Tiket?</p>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Tidak</button>
+                                <a href="<?= base_url() ?>Karyawan_asking/close_tiket/<?= $row->id_ticket ?>"><button type="button" class="btn btn-outline">Ya</button></a>
+                              </div>
+                            </div>
+                            <!-- /.modal-content -->
+                          </div>
+                          <!-- /.modal-dialog -->
+                        </div>
+                      <?php
+                      }
+                      ?>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                  </table>
                 </div>
-                <!-- /.modal-dialog -->
+                <!-- /.box-body -->
               </div>
-              <div class="modal modal-info fade" id="updatepenanggap">
-                <div class="modal-dialog">
-                  <div class="modal-content" style="width:450px">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" style="text-align: center">Respon Tiket</h4>
-                    </div>
-                    <div class="modal-body">
-                      <div class="form-group has-feedback">
-                        <input name="id_tiket" type="text" style="width:400px" class="form-control" placeholder="ID_Tiket">
-                      </div>
-                      <div class="form-group has-feedback">
-                        <input name="nama_Pengirim" type="text" style="width:400px" class="form-control" placeholder="Nama Pengirim">
-                      </div>
-                      <div class="form-group has-feedback">
-                        <input name="keterangan_tiket" type="text" style="width:400px" class="form-control" placeholder="Keterangan Tiket">
-                      </div>
-                      <div class="form-group has-feedback">
-                        <input name="tanggal_tiket" type="text" style="width:400px" class="form-control" placeholder="Tanggal Tiket">
-                      </div>
-                      <div class="form-group has-feedback">
-                        <textarea input name="isi_respon" type="text" style="width:400px" class="form-control" placeholder="Respon"></textarea>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-outline">Save changes</button>
-                    </div>
-                  </div>
-                  <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-              </div>
-
-              <!-- /.box-header -->
-              <div class="box-body">
-                <table id="example1" class="table table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>ID Tiket</th>
-                      <th>Nama Pengirim</th>
-                      <th>Keterangan</th>
-                      <th>Tanggal</th>
-                      <th>Status</th>
-                      <th>Action</th>
-
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>001</td>
-                      <td>Anjing</td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>OK</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#updatepenanggap"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#deletetiket"><i class="fa fa-remove" style="color:red"></i></button>
-                      </td>
-
-
-                    </tr>
-                    <tr>
-                      <td>001</td>
-                      <td>Abdul
-                      </td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>Cancel</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#updatepenanggap"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#deletetiket"><i class="fa fa-remove" style="color:red"></i></button>
-
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>001</td>
-                      <td>Abdul
-                      </td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>Web</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#updatepenanggap"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#deletetiket"><i class="fa fa-remove" style="color:red"></i></button>
-
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>001</td>
-                      <td>Abdul
-                      </td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>Web</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#updatepenanggap"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#deletetiket"><i class="fa fa-remove" style="color:red"></i></button>
-
-                      </td>
-
-                    </tr>
-                    <tr>
-                      <td>001</td>
-                      <td>Abdul
-                      </td>
-                      <td> 123123123</td>
-                      <td>Jl. Jala</td>
-                      <td>Web</td>
-                      <td class="text-center">
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#updatepenanggap"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-app1" data-toggle="modal" data-target="#deletetiket"><i class="fa fa-remove" style="color:red"></i></button>
-
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                  </tfoot>
-                </table>
-              </div>
-              <!-- /.box-body -->
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      <?php
+      } elseif (isset($daftar_tiket_close)) { ?>
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title" style="text-align: center">Data Tiket</h3>
+                </div>
+
+                <div class="modal modal-danger fade" id="deletetiket">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Peringatan!</h4>
+                      </div>
+                      <div class="modal-body">
+                        <p>Apakah Anda Yakin Ingin Menutup Tiket?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Tidak</button>
+                        <button type="button" class="btn btn-outline">Ya</button>
+                      </div>
+                    </div>
+                    <!-- /.modal-content -->
+                  </div>
+                  <!-- /.modal-dialog -->
+                </div>
+
+                <!-- /.box-header -->
+                <div class="box-body">
+                  <table id="example1" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>ID Tiket</th>
+                        <th>Nama Pengirim</th>
+                        <th>Judul</th>
+                        <th>Tanggal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php
+                      foreach ($daftar_tiket_close->result() as $row) {
+                      ?>
+                        <tr>
+                          <td><?= $row->id_ticket ?></td>
+                          <td><?= $row->first_name ?></td>
+                          <td><?= $row->details ?></td>
+                          <td><?= $row->date_time ?></td>
+                        </tr>
+                      <?php
+                      }
+                      ?>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                  </table>
+                </div>
+                <!-- /.box-body -->
+              </div>
+            </div>
+          </div>
+        </section>
+      <?php } elseif (isset($detail_tiket)) { ?>
+        <section class="content-header">
+        </section>
+
+        <!-- Main content -->
+        <section class="content-header">
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-md-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav navbar-static-top">
+                  <h4 style="text-align: center"><strong>Review Tiket</strong></h4>
+                </ul>
+                <form class="form-horizontal" action="<?= base_url() ?>Karyawan_asking/send_chat/" method="post">
+                  <?php
+                  foreach ($detail_tiket->result() as $row) {
+                  ?>
+                    <div class="form-group">
+                      <label for="namapengirim" class="col-sm-2 control-label">Nama Pengirim</label>
+                      <div class=" col-sm-8">
+                        <input type="text" class="form-control" id="namapengirim" placeholder="Nama Pengirim" value="<?= $row->first_name ?> <?= $row->last_name ?>" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="kategoritiket" class="col-sm-2 control-label">Kategori Tiket</label>
+                      <div class="col-md-8">
+                        <input type="text" class="form-control" id="kategoritiket" placeholder="Kategori Tiket" value="<?= $row->name ?> - <?= $row->problem_details ?>" disabled>
+                      </div>
+                    </div>
+                    <hr width="100%">
+                    <div class="form-group">
+                      <div class="row comments2 mb-2">
+                        <div class="col-md-1 col-sm-2 col-7">
+                        </div>
+                        <div class="col-md-8 col-sm-9 col-9 comment rounded mb-2">
+                          <h4 class="m-0"><strong><?= $row->first_name ?> <?= $row->last_name ?></strong></h4>
+                          <p class="mb-0 text-white"><?= $row->details ?></p>
+                        </div>
+                      </div>
+                    </div>
+                    <?php foreach ($data_chat->result() as $chat) {
+                      if ($chat->group_id == 3) { ?>
+                        <div class="form-group">
+                          <div class="row comments2 mb-2">
+                            <div class="col-md-1 col-sm-2 col-7">
+                            </div>
+                            <div class="col-md-8 col-sm-9 col-9 comment rounded mb-2">
+                              <h4 class="m-0"><strong> <?= $chat->first_name ?> <?= $chat->last_name ?></strong></h4>
+                              <p class="mb-0 text-white"><?= $chat->message ?></p>
+                            </div>
+                          </div>
+                        </div>
+                      <?php } else { ?>
+                        <div class="form-group">
+                          <div class="row comments mb-2">
+                            <div class="col-md-2 col-sm-1 col-3">
+                            </div>
+                            <div class="col-md-8 col-sm-8 col-9 comment rounded mb-2">
+                              <h4 class="m-0"><strong><?= $chat->first_name ?> <?= $chat->last_name ?></strong></h4>
+                              <p class="mb-0 text-white"><?= $chat->message ?></p>
+                            </div>
+                          </div>
+                        </div>
+                      <?php }
+                      ?>
+                    <?php } ?>
+                    <div class="form-group">
+                      <div class="row comments mb-2">
+                        <div class="col-md-1 col-sm-2 col-7">
+                        </div>
+                        <div class="col-md-8 col-sm-7 col-8 pr-0 comment-box">
+                          <input type="hidden" name="hidden_id" value="<?= $row->id ?>">
+                          <input type="hidden" name="hidden_id_tiket" value="<?= $row->id_ticket ?>">
+                          <input type="text" name="chat" class="form-control" placeholder="Balas Chat......." />
+                        </div>
+                        <div class="col-md-1 col-sm-2 col-2 pl-0 text-center send-btn">
+                          <button name="submit" type="submit" class="btn btn-info">Send</button>
+                        </div>
+                      </div>
+                    </div>
+                  <?php } ?>
+                </form>
+              </div>
+              <!-- /.tab-pane -->
+              </!-->
+              <!-- /.tab-content -->
+            </div>
+            <!-- /.nav-tabs-custom -->
+          </div>
+          <!-- /.col -->
     </div>
-
-
-    <!-- /.box -->
-    <!-- /.content-wrapper -->
-    <footer class="main-footer">
-      <div class="pull-right hidden-xs">
-      </div>
-      <strong>Website by S1 Teknik Informatika 2016 Universitas Negeri Surabaya</strong>
-    </footer>
-
-    <!-- Control Sidebar -->
-        <!-- /.control-sidebar -->
-    <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-    <div class="control-sidebar-bg"></div>
+    <!-- /.row -->
   </div>
-  <!-- ./wrapper -->
+
+  </section>
+<?php } else { ?>
+  <section class="content">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title" style="text-align: center">Data Tiket</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <table id="example1" class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>ID Tiket</th>
+                  <th>Nama Pengirim</th>
+                  <th>Judul</th>
+                  <th>Tanggal</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                foreach ($daftar_tiket->result() as $row) {
+                ?>
+                  <tr>
+                    <td><?= $row->id_ticket ?></td>
+                    <td><?= $row->first_name ?></td>
+                    <td><?= $row->details ?></td>
+                    <td><?= $row->date_time ?></td>
+                    <td>
+                      <a href="<?= base_url() ?>Karyawan_asking/detail_tiket/<?= $row->id_ticket ?>"><button class="btn btn-app1" data-toggle="modal" data-target="#detailtiket"><i class="fa fa-edit"></i></button></a>
+                      <button class="btn btn-app1" data-toggle="modal" data-target="#deletetiket<?= $row->id_ticket ?>"><i class="fa fa-remove" style="color:red"></i></button>
+                    </td>
+                  </tr>
+                  <div class="modal modal-danger fade" id="deletetiket<?= $row->id_ticket ?>">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title">Peringatan!</h4>
+                        </div>
+                        <div class="modal-body">
+                          <p>Apakah Anda Yakin Ingin Menutup Tiket?</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Tidak</button>
+                          <a href="<?= base_url() ?>Karyawan_asking/close_tiket/<?= $row->id_ticket ?>"><button type="button" class="btn btn-outline">Ya</button></a>
+                        </div>
+                      </div>
+                      <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                  </div>
+                <?php
+                }
+                ?>
+              </tbody>
+              <tfoot>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <!-- /.box-body -->
+      </div>
+    </div>
+  </section>
+<?php
+      }
+?>
+</div>
+
+
+
+<!-- /.box -->
+<!-- /.content-wrapper -->
+<footer class="main-footer">
+  <div class="pull-right hidden-xs">
+  </div>
+  <strong>Website by S1 Teknik Informatika 2016 Universitas Negeri Surabaya</strong>
+</footer>
+
+<!-- Control Sidebar -->
+<!-- /.control-sidebar -->
+<!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+<div class="control-sidebar-bg"></div>
+</div>
+
+<!-- ./wrapper -->

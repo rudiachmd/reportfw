@@ -53,6 +53,7 @@ class Auth extends CI_Controller
 			}
 
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'index', $this->data);
+			redirect(base_url() . "Admin/");
 		}
 	}
 
@@ -71,12 +72,12 @@ class Auth extends CI_Controller
 			// check to see if the user is logging in
 			// check for "remember me"
 			$remember = (bool) $this->input->post('remember');
-			$admin = 1;
-			$karyawan_asking = 2;
-			$user = 3;
-			$karyawan_software = 4;
-			$karyawan_hardware = 5;
-			$karyawan = 6;
+			$admin = 'admin';
+			$karyawan_asking = 'asking';
+			$user = 'members';
+			$karyawan_software = 'software';
+			$karyawan_hardware = 'hardware';
+			$karyawan = 'verifikasi';
 
 			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember)) {
 				//if the login is successful
@@ -448,9 +449,9 @@ class Auth extends CI_Controller
 	{
 		$this->data['title'] = $this->lang->line('create_user_heading');
 
-		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
-			redirect('auth', 'refresh');
-		}
+		// if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
+		// 	redirect('auth', 'refresh');
+		// }
 
 		$tables = $this->config->item('tables', 'ion_auth');
 		$identity_column = $this->config->item('identity', 'ion_auth');
@@ -469,6 +470,9 @@ class Auth extends CI_Controller
 		$this->form_validation->set_rules('company', $this->lang->line('create_user_validation_company_label'), 'trim');
 		$this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|matches[password_confirm]');
 		$this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
+		$this->form_validation->set_rules('ktp', 'Masukkan No. KTP', 'trim|required');
+		$this->form_validation->set_rules('address', 'Masukkan Alamat', 'trim|required');
+		//$this->form_validation->set_rules('pict_ktp', 'Masukkan Foto KTP', 'required');
 
 		if ($this->form_validation->run() === TRUE) {
 			$email = strtolower($this->input->post('email'));
@@ -480,28 +484,37 @@ class Auth extends CI_Controller
 				'last_name' => $this->input->post('last_name'),
 				'company' => $this->input->post('company'),
 				'phone' => $this->input->post('phone'),
+				'ktp' => $this->input->post('ktp'),
+				'address' => $this->input->post('address'),
+				//'pict_ktp' => $this->input->post('pict_ktp'),
 			];
 		}
 		if ($this->form_validation->run() === TRUE && $this->ion_auth->register($identity, $password, $email, $additional_data)) {
 			// check to see if we are creating the user
 			// redirect them back to the admin page
 			$this->session->set_flashdata('message', $this->ion_auth->messages());
-			redirect("auth", 'refresh');
+			redirect("auth/login", 'refresh');
 		} else {
 			// display the create user form
 			// set the flash data error message if there is one
 			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+			//var_dump($this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message'))));
+			//die;
 
 			$this->data['first_name'] = [
 				'name' => 'first_name',
 				'id' => 'first_name',
 				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Depan',
 				'value' => $this->form_validation->set_value('first_name'),
 			];
 			$this->data['last_name'] = [
 				'name' => 'last_name',
 				'id' => 'last_name',
 				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Belakang',
 				'value' => $this->form_validation->set_value('last_name'),
 			];
 			$this->data['identity'] = [
@@ -514,6 +527,8 @@ class Auth extends CI_Controller
 				'name' => 'email',
 				'id' => 'email',
 				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Email',
 				'value' => $this->form_validation->set_value('email'),
 			];
 			$this->data['company'] = [
@@ -526,24 +541,447 @@ class Auth extends CI_Controller
 				'name' => 'phone',
 				'id' => 'phone',
 				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'No. Telepon',
 				'value' => $this->form_validation->set_value('phone'),
 			];
 			$this->data['password'] = [
 				'name' => 'password',
 				'id' => 'password',
 				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Password',
 				'value' => $this->form_validation->set_value('password'),
 			];
 			$this->data['password_confirm'] = [
 				'name' => 'password_confirm',
 				'id' => 'password_confirm',
 				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Ketik Ulang Password',
 				'value' => $this->form_validation->set_value('password_confirm'),
+			];
+			$this->data['ktp'] = [
+				'name' => 'ktp',
+				'id' => 'ktp',
+				'type' => 'number',
+				'class' => 'form-control',
+				'placeholder' => 'Masukkan Nomer KTP',
+				'value' => $this->form_validation->set_value('ktp'),
+			];
+			$this->data['address'] = [
+				'name' => 'address',
+				'id' => 'address',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Masukkan Alamat',
+				'value' => $this->form_validation->set_value('address'),
+			];
+			$this->data['pict_ktp'] = [
+				'name' => 'pict_ktp',
+				'id' => 'pict_ktp',
+				'type' => 'file',
+				'class' => 'form-control',
+				'placeholder' => 'Masukkan Foto KTP',
+				'value' => $this->form_validation->set_value('pict_ktp'),
 			];
 
 			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'create_user', $this->data);
 		}
 	}
+
+	public function create_user_new()
+	{
+		$this->data['title'] = $this->lang->line('create_user_heading');
+		$this->data['user'] = $this->ion_auth->user();
+
+		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
+			redirect('auth/login', 'refresh');
+		}
+
+		$tables = $this->config->item('tables', 'ion_auth');
+		$identity_column = $this->config->item('identity', 'ion_auth');
+		$this->data['identity_column'] = $identity_column;
+
+		// validate form input
+		$this->form_validation->set_rules('first_name', $this->lang->line('create_user_validation_fname_label'), 'trim|required');
+		$this->form_validation->set_rules('last_name', $this->lang->line('create_user_validation_lname_label'), 'trim|required');
+		if ($identity_column !== 'email') {
+			$this->form_validation->set_rules('identity', $this->lang->line('create_user_validation_identity_label'), 'trim|required|is_unique[' . $tables['users'] . '.' . $identity_column . ']');
+			$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'trim|required|valid_email');
+		} else {
+			$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'trim|required|valid_email|is_unique[' . $tables['users'] . '.email]');
+		}
+		$this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|matches[password_confirm]');
+		$this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
+
+		if ($this->form_validation->run() === TRUE) {
+			$email = strtolower($this->input->post('email'));
+			$identity = ($identity_column === 'email') ? $email : $this->input->post('identity');
+			$password = $this->input->post('password');
+
+			$additional_data = [
+				'first_name' => $this->input->post('first_name'),
+				'last_name' => $this->input->post('last_name'),
+			];
+		}
+		if ($this->form_validation->run() === TRUE && $this->ion_auth->register_new($identity, $password, $email, $additional_data)) {
+			// check to see if we are creating the user
+			// redirect them back to the admin page
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			redirect("admin/kar_verifikasi/", 'refresh');
+		} else {
+			// display the create user form
+			// set the flash data error message if there is one
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+			//var_dump($this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message'))));
+			//die;
+
+			$this->data['first_name'] = [
+				'name' => 'first_name',
+				'id' => 'first_name',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Depan',
+				'value' => $this->form_validation->set_value('first_name'),
+			];
+			$this->data['last_name'] = [
+				'name' => 'last_name',
+				'id' => 'last_name',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Belakang',
+				'value' => $this->form_validation->set_value('last_name'),
+			];
+			$this->data['identity'] = [
+				'name' => 'identity',
+				'id' => 'identity',
+				'type' => 'text',
+				'value' => $this->form_validation->set_value('identity'),
+			];
+			$this->data['email'] = [
+				'name' => 'email',
+				'id' => 'email',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Email',
+				'value' => $this->form_validation->set_value('email'),
+			];
+			$this->data['password'] = [
+				'name' => 'password',
+				'id' => 'password',
+				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Password',
+				'value' => $this->form_validation->set_value('password'),
+			];
+			$this->data['password_confirm'] = [
+				'name' => 'password_confirm',
+				'id' => 'password_confirm',
+				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Ketik Ulang Password',
+				'value' => $this->form_validation->set_value('password_confirm'),
+			];
+
+			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'create_user_new', $this->data);
+		}
+	}
+
+	public function create_user_asking()
+	{
+		$this->data['title'] = $this->lang->line('create_user_heading');
+		$this->data['user'] = $this->ion_auth->user();
+
+		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
+			redirect('auth/login', 'refresh');
+		}
+
+		$tables = $this->config->item('tables', 'ion_auth');
+		$identity_column = $this->config->item('identity', 'ion_auth');
+		$this->data['identity_column'] = $identity_column;
+
+		// validate form input
+		$this->form_validation->set_rules('first_name', $this->lang->line('create_user_validation_fname_label'), 'trim|required');
+		$this->form_validation->set_rules('last_name', $this->lang->line('create_user_validation_lname_label'), 'trim|required');
+		if ($identity_column !== 'email') {
+			$this->form_validation->set_rules('identity', $this->lang->line('create_user_validation_identity_label'), 'trim|required|is_unique[' . $tables['users'] . '.' . $identity_column . ']');
+			$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'trim|required|valid_email');
+		} else {
+			$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'trim|required|valid_email|is_unique[' . $tables['users'] . '.email]');
+		}
+		$this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|matches[password_confirm]');
+		$this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
+
+		if ($this->form_validation->run() === TRUE) {
+			$email = strtolower($this->input->post('email'));
+			$identity = ($identity_column === 'email') ? $email : $this->input->post('identity');
+			$password = $this->input->post('password');
+
+			$additional_data = [
+				'first_name' => $this->input->post('first_name'),
+				'last_name' => $this->input->post('last_name'),
+			];
+		}
+		if ($this->form_validation->run() === TRUE && $this->ion_auth->register_asking($identity, $password, $email, $additional_data)) {
+			// check to see if we are creating the user
+			// redirect them back to the admin page
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			redirect("admin/", 'refresh');
+		} else {
+			// display the create user form
+			// set the flash data error message if there is one
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+			//var_dump($this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message'))));
+			//die;
+
+			$this->data['first_name'] = [
+				'name' => 'first_name',
+				'id' => 'first_name',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Depan',
+				'value' => $this->form_validation->set_value('first_name'),
+			];
+			$this->data['last_name'] = [
+				'name' => 'last_name',
+				'id' => 'last_name',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Belakang',
+				'value' => $this->form_validation->set_value('last_name'),
+			];
+			$this->data['identity'] = [
+				'name' => 'identity',
+				'id' => 'identity',
+				'type' => 'text',
+				'value' => $this->form_validation->set_value('identity'),
+			];
+			$this->data['email'] = [
+				'name' => 'email',
+				'id' => 'email',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Email',
+				'value' => $this->form_validation->set_value('email'),
+			];
+			$this->data['password'] = [
+				'name' => 'password',
+				'id' => 'password',
+				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Password',
+				'value' => $this->form_validation->set_value('password'),
+			];
+			$this->data['password_confirm'] = [
+				'name' => 'password_confirm',
+				'id' => 'password_confirm',
+				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Ketik Ulang Password',
+				'value' => $this->form_validation->set_value('password_confirm'),
+			];
+
+			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'create_user_asking', $this->data);
+		}
+	}
+
+	public function create_user_software()
+	{
+		$this->data['title'] = $this->lang->line('create_user_heading');
+		$this->data['user'] = $this->ion_auth->user();
+
+		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
+			redirect('auth/login', 'refresh');
+		}
+
+		$tables = $this->config->item('tables', 'ion_auth');
+		$identity_column = $this->config->item('identity', 'ion_auth');
+		$this->data['identity_column'] = $identity_column;
+
+		// validate form input
+		$this->form_validation->set_rules('first_name', $this->lang->line('create_user_validation_fname_label'), 'trim|required');
+		$this->form_validation->set_rules('last_name', $this->lang->line('create_user_validation_lname_label'), 'trim|required');
+		if ($identity_column !== 'email') {
+			$this->form_validation->set_rules('identity', $this->lang->line('create_user_validation_identity_label'), 'trim|required|is_unique[' . $tables['users'] . '.' . $identity_column . ']');
+			$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'trim|required|valid_email');
+		} else {
+			$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'trim|required|valid_email|is_unique[' . $tables['users'] . '.email]');
+		}
+		$this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|matches[password_confirm]');
+		$this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
+
+		if ($this->form_validation->run() === TRUE) {
+			$email = strtolower($this->input->post('email'));
+			$identity = ($identity_column === 'email') ? $email : $this->input->post('identity');
+			$password = $this->input->post('password');
+
+			$additional_data = [
+				'first_name' => $this->input->post('first_name'),
+				'last_name' => $this->input->post('last_name'),
+			];
+		}
+		if ($this->form_validation->run() === TRUE && $this->ion_auth->register_software($identity, $password, $email, $additional_data)) {
+			// check to see if we are creating the user
+			// redirect them back to the admin page
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			redirect("admin/kar_software/", 'refresh');
+		} else {
+			// display the create user form
+			// set the flash data error message if there is one
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+			//var_dump($this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message'))));
+			//die;
+
+			$this->data['first_name'] = [
+				'name' => 'first_name',
+				'id' => 'first_name',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Depan',
+				'value' => $this->form_validation->set_value('first_name'),
+			];
+			$this->data['last_name'] = [
+				'name' => 'last_name',
+				'id' => 'last_name',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Belakang',
+				'value' => $this->form_validation->set_value('last_name'),
+			];
+			$this->data['identity'] = [
+				'name' => 'identity',
+				'id' => 'identity',
+				'type' => 'text',
+				'value' => $this->form_validation->set_value('identity'),
+			];
+			$this->data['email'] = [
+				'name' => 'email',
+				'id' => 'email',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Email',
+				'value' => $this->form_validation->set_value('email'),
+			];
+			$this->data['password'] = [
+				'name' => 'password',
+				'id' => 'password',
+				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Password',
+				'value' => $this->form_validation->set_value('password'),
+			];
+			$this->data['password_confirm'] = [
+				'name' => 'password_confirm',
+				'id' => 'password_confirm',
+				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Ketik Ulang Password',
+				'value' => $this->form_validation->set_value('password_confirm'),
+			];
+
+			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'create_user_software', $this->data);
+		}
+	}
+	public function create_user_hardware()
+	{
+		$this->data['title'] = $this->lang->line('create_user_heading');
+		$this->data['user'] = $this->ion_auth->user();
+
+		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
+			redirect('auth/login', 'refresh');
+		}
+
+		$tables = $this->config->item('tables', 'ion_auth');
+		$identity_column = $this->config->item('identity', 'ion_auth');
+		$this->data['identity_column'] = $identity_column;
+
+		// validate form input
+		$this->form_validation->set_rules('first_name', $this->lang->line('create_user_validation_fname_label'), 'trim|required');
+		$this->form_validation->set_rules('last_name', $this->lang->line('create_user_validation_lname_label'), 'trim|required');
+		if ($identity_column !== 'email') {
+			$this->form_validation->set_rules('identity', $this->lang->line('create_user_validation_identity_label'), 'trim|required|is_unique[' . $tables['users'] . '.' . $identity_column . ']');
+			$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'trim|required|valid_email');
+		} else {
+			$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'trim|required|valid_email|is_unique[' . $tables['users'] . '.email]');
+		}
+		$this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|matches[password_confirm]');
+		$this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
+
+		if ($this->form_validation->run() === TRUE) {
+			$email = strtolower($this->input->post('email'));
+			$identity = ($identity_column === 'email') ? $email : $this->input->post('identity');
+			$password = $this->input->post('password');
+
+			$additional_data = [
+				'first_name' => $this->input->post('first_name'),
+				'last_name' => $this->input->post('last_name'),
+			];
+		}
+		if ($this->form_validation->run() === TRUE && $this->ion_auth->register_hardware($identity, $password, $email, $additional_data)) {
+			// check to see if we are creating the user
+			// redirect them back to the admin page
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			redirect("admin/kar_hardware/", 'refresh');
+		} else {
+			// display the create user form
+			// set the flash data error message if there is one
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+			//var_dump($this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message'))));
+			//die;
+
+			$this->data['first_name'] = [
+				'name' => 'first_name',
+				'id' => 'first_name',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Depan',
+				'value' => $this->form_validation->set_value('first_name'),
+			];
+			$this->data['last_name'] = [
+				'name' => 'last_name',
+				'id' => 'last_name',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Nama Belakang',
+				'value' => $this->form_validation->set_value('last_name'),
+			];
+			$this->data['identity'] = [
+				'name' => 'identity',
+				'id' => 'identity',
+				'type' => 'text',
+				'value' => $this->form_validation->set_value('identity'),
+			];
+			$this->data['email'] = [
+				'name' => 'email',
+				'id' => 'email',
+				'type' => 'text',
+				'class' => 'form-control',
+				'placeholder' => 'Email',
+				'value' => $this->form_validation->set_value('email'),
+			];
+			$this->data['password'] = [
+				'name' => 'password',
+				'id' => 'password',
+				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Password',
+				'value' => $this->form_validation->set_value('password'),
+			];
+			$this->data['password_confirm'] = [
+				'name' => 'password_confirm',
+				'id' => 'password_confirm',
+				'type' => 'password',
+				'class' => 'form-control',
+				'placeholder' => 'Ketik Ulang Password',
+				'value' => $this->form_validation->set_value('password_confirm'),
+			];
+
+			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'create_user_hardware', $this->data);
+		}
+	}
+
+
 	/**
 	 * Redirect a user checking if is admin
 	 */
@@ -552,19 +990,21 @@ class Auth extends CI_Controller
 		if ($this->ion_auth->is_admin()) {
 			redirect('auth', 'refresh');
 		}
-		redirect('/', 'refresh');
+		redirect('auth', 'refresh');
 	}
 
 	/**
 	 * Edit a user
 	 *
 	 * @param int|string $id
+	 * 
 	 */
 	public function edit_user($id)
 	{
 		$this->data['title'] = $this->lang->line('edit_user_heading');
 
-		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !($this->ion_auth->user()->row()->id == $id))) {
+		// if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !($this->ion_auth->user()->row()->id == $id))) {
+		if (!$this->ion_auth->logged_in() || !($this->ion_auth->user()->row()->id == $id)) {
 			redirect('auth', 'refresh');
 		}
 
@@ -580,7 +1020,6 @@ class Auth extends CI_Controller
 		$this->form_validation->set_rules('first_name', $this->lang->line('edit_user_validation_fname_label'), 'trim|required');
 		$this->form_validation->set_rules('last_name', $this->lang->line('edit_user_validation_lname_label'), 'trim|required');
 		$this->form_validation->set_rules('phone', $this->lang->line('edit_user_validation_phone_label'), 'trim');
-		$this->form_validation->set_rules('company', $this->lang->line('edit_user_validation_company_label'), 'trim');
 
 		if (isset($_POST) && !empty($_POST)) {
 			// do we have a valid request?
@@ -598,7 +1037,6 @@ class Auth extends CI_Controller
 				$data = [
 					'first_name' => $this->input->post('first_name'),
 					'last_name' => $this->input->post('last_name'),
-					'company' => $this->input->post('company'),
 					'phone' => $this->input->post('phone'),
 				];
 
@@ -624,11 +1062,25 @@ class Auth extends CI_Controller
 				if ($this->ion_auth->update($user->id, $data)) {
 					// redirect them back to the admin page if admin, or to the base url if non admin
 					$this->session->set_flashdata('message', $this->ion_auth->messages());
-					$this->redirectUser();
+					//$this->redirectUser();
+					if ($this->ion_auth->in_group('members')) {
+						redirect(base_url() . "User");
+					} elseif ($this->ion_auth->in_group('admin')) {
+						redirect(base_url() . "Admin");
+					} elseif ($this->ion_auth->in_group('asking')) {
+						redirect(base_url() . "Karyawan_asking");
+					} elseif ($this->ion_auth->in_group('verifikasi')) {
+						redirect(base_url() . "Karyawan");
+					} elseif ($this->ion_auth->in_group('software')) {
+						redirect(base_url() . "Karyawan_software");
+					} elseif ($this->ion_auth->in_group('hardware')) {
+						redirect(base_url() . "Karyawan_hardware");
+					}
 				} else {
 					// redirect them back to the admin page if admin, or to the base url if non admin
 					$this->session->set_flashdata('message', $this->ion_auth->errors());
-					$this->redirectUser();
+					//$this->redirectUser();
+					redirect(base_url());
 				}
 			}
 		}
@@ -648,34 +1100,33 @@ class Auth extends CI_Controller
 			'name'  => 'first_name',
 			'id'    => 'first_name',
 			'type'  => 'text',
+			'class' => 'form-control',
 			'value' => $this->form_validation->set_value('first_name', $user->first_name),
 		];
 		$this->data['last_name'] = [
 			'name'  => 'last_name',
 			'id'    => 'last_name',
 			'type'  => 'text',
+			'class' => 'form-control',
 			'value' => $this->form_validation->set_value('last_name', $user->last_name),
-		];
-		$this->data['company'] = [
-			'name'  => 'company',
-			'id'    => 'company',
-			'type'  => 'text',
-			'value' => $this->form_validation->set_value('company', $user->company),
 		];
 		$this->data['phone'] = [
 			'name'  => 'phone',
 			'id'    => 'phone',
 			'type'  => 'text',
+			'class' => 'form-control',
 			'value' => $this->form_validation->set_value('phone', $user->phone),
 		];
 		$this->data['password'] = [
 			'name' => 'password',
 			'id'   => 'password',
+			'class' => 'form-control',
 			'type' => 'password'
 		];
 		$this->data['password_confirm'] = [
 			'name' => 'password_confirm',
 			'id'   => 'password_confirm',
+			'class' => 'form-control',
 			'type' => 'password'
 		];
 
@@ -834,5 +1285,9 @@ class Auth extends CI_Controller
 		if ($returnhtml) {
 			return $view_html;
 		}
+	}
+	public function detailkelompok()
+	{
+		$this->load->view("auth/fotokel/detailkelompok");
 	}
 }
